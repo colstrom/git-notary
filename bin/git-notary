@@ -124,10 +124,10 @@ fetch() {
     git fetch ${REMOTE} refs/notes/${NAMESPACE}:refs/notes/${NAMESPACE}
 }
 
-# push [namespace] [remote]
+# push [remote] [namespace]
 push() {
-    NAMESPACE=${1:-${GIT_NOTARY_NAMESPACE:-'versioning'}}
-    REMOTE=${2:-'origin'}
+    REMOTE=${1:-'origin'}
+    NAMESPACE=${2:-${GIT_NOTARY_NAMESPACE:-'versioning'}}
 
     git push --no-verify ${REMOTE} refs/notes/${NAMESPACE}
 }
@@ -175,8 +175,8 @@ usage:
        git-notary new <major|minor|patch> [namespace] [object]
        git-notary undo [namespace] [object]
 
-       git-notary push [namespace] [remote]
        git-notary fetch [remote] [namespace]
+       git-notary push [remote] [namespace]
 
        git-notary notes [branch] [base] [namespace]
        git-notary versions [initial]
