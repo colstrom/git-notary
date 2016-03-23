@@ -154,10 +154,10 @@ show() {
     git notes --ref=${NAMESPACE} show ${OBJECT}
 }
 
-# undo [namespace] [object]
+# undo [object] [namespace]
 undo() {
-    NAMESPACE=${1:-${GIT_NOTARY_NAMESPACE:-'versioning'}}
-    OBJECT=${2:-HEAD}
+    OBJECT=${1:-HEAD}
+    NAMESPACE=${2:-${GIT_NOTARY_NAMESPACE:-'versioning'}}
 
     git notes --ref=${NAMESPACE} remove ${OBJECT}
 }
@@ -172,8 +172,8 @@ help() {
     cat <<EOF
 $(version)
 usage:
-       git-notary undo [namespace] [object]
        git-notary new <major|minor|patch> [object] [namespace]
+       git-notary undo [object] [namespace]
 
        git-notary fetch [remote] [namespace]
        git-notary push [remote] [namespace]
