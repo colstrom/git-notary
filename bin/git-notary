@@ -33,6 +33,38 @@ squash() {
     test ! -z "${RESULT}" && echo ${OBJECT} ${RESULT}
 }
 
+# squeeze <up|down>
+squeeze() {
+    case ${1} in
+        d|down|f|first|o|old*)
+            DIRECTION=DOWN;;
+        u|up|l|last|n|new*)
+            DIRECTION=UP;;
+        *)
+            echo 'git-notary squeeze requires a direction (up or down)' >&2
+            exit 23;;
+    esac
+
+    while read OBJECT_CHANGE; do
+        OBJECT=$(echo ${OBJECT_CHANGE} | awk '{ print $1 }')
+        CHANGE=$(echo ${OBJECT_CHANGE} | awk '{ print $2 }')
+
+        if test "${CHANGE}" != "${LAST_CHANGE}"; then
+            case ${DIRECTION} in
+                DOWN)
+                    echo ${OBJECT} ${CHANGE};;
+                UP)
+                    test ! -z "${LAST_OBJECT}" && echo ${LAST_OBJECT} ${LAST_CHANGE};;
+            esac
+        fi
+
+        LAST_OBJECT=${OBJECT}
+        LAST_CHANGE=${CHANGE}
+    done
+
+    test "${DIRECTION}" = UP && echo ${LAST_OBJECT} ${LAST_CHANGE}
+}
+
 # versions [initial]
 versions() {
     set -o errexit
@@ -165,6 +197,8 @@ notary() {
             tags ${@};;
         S|squash)
             squash ${@};;
+        Z|squeeze)
+            squeeze ${@};;
         n|new)
             new ${@};;
         u|undo)
