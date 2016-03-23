@@ -78,7 +78,7 @@ Download the latest release of ~git-notary~ and place it somewhere in your ~$PAT
 ** Add new versioning information
 
 #+BEGIN_SRC shell
-  git-notary new <version> [namespace] [object]
+  git-notary new <version> [object] [namespace]
 #+END_SRC
 
 Where <version> is one of (major, minor, patch).
@@ -86,19 +86,19 @@ Where <version> is one of (major, minor, patch).
 ** Undo a version
 
 #+BEGIN_SRC shell
-  git-notary undo [namespace] [object]
+  git-notary undo [object] [namespace]
 #+END_SRC
 
 ** Fetch versioning notes
 
 #+BEGIN_SRC shell
-  git-notary fetch [namespace] [remote]
+  git-notary fetch [remote] [namespace]
 #+END_SRC
 
 ** Push versioning notes
 
 #+BEGIN_SRC shell
-  git-notary push [namespace] [remote]
+  git-notary push [remote] [namespace]
 #+END_SRC
 
 ** Extract Notes
