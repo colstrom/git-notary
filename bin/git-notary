@@ -14,6 +14,25 @@ notes() {
     done | grep -E '(MAJOR|MINOR|PATCH)$'
 }
 
+# squash
+squash() {
+    while read OBJECT_CHANGE; do
+        OBJECT=$(echo ${OBJECT_CHANGE} | awk '{ print $1 }')
+        CHANGE=$(echo ${OBJECT_CHANGE} | awk '{ print $2 }')
+
+        case ${CHANGE} in
+            MAJOR)
+                RESULT=MAJOR;;
+            MINOR)
+                test "${RESULT}" != MAJOR && RESULT=MINOR;;
+            PATCH)
+                test -z "${RESULT}" && RESULT=PATCH;;
+        esac
+    done
+
+    test ! -z "${RESULT}" && echo ${OBJECT} ${RESULT}
+}
+
 # versions [initial]
 versions() {
     set -o errexit
@@ -144,6 +163,8 @@ notary() {
             versions ${@};;
         T|tags)
             tags ${@};;
+        S|squash)
+            squash ${@};;
         n|new)
             new ${@};;
         u|undo)
