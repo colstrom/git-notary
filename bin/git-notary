@@ -146,10 +146,10 @@ new() {
     fi
 }
 
-# show [namespace] [object]
+# show [object] [namespace]
 show() {
-    NAMESPACE=${1:-${GIT_NOTARY_NAMESPACE:-'versioning'}}
-    OBJECT=${2:-HEAD}
+    OBJECT=${1:-HEAD}
+    NAMESPACE=${2:-${GIT_NOTARY_NAMESPACE:-'versioning'}}
 
     git notes --ref=${NAMESPACE} show ${OBJECT}
 }
