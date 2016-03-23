@@ -132,11 +132,11 @@ push() {
     git push --no-verify ${REMOTE} refs/notes/${NAMESPACE}
 }
 
-# new <major|minor|patch> [namespace] [commit]
+# new <major|minor|patch> [object] [namespace]
 new() {
     CHANGE=$(echo ${1} | tr [:lower:] [:upper:])
-    NAMESPACE=${2:-${GIT_NOTARY_NAMESPACE:-'versioning'}}
-    OBJECT=${3:-HEAD}
+    OBJECT=${2:-HEAD}
+    NAMESPACE=${3:-${GIT_NOTARY_NAMESPACE:-'versioning'}}
 
     if echo ${CHANGE} | grep -qE '^(MAJOR|MINOR|PATCH)$'; then
         git notes --ref=${NAMESPACE} add --message ${CHANGE} ${OBJECT}
@@ -172,8 +172,8 @@ help() {
     cat <<EOF
 $(version)
 usage:
-       git-notary new <major|minor|patch> [namespace] [object]
        git-notary undo [namespace] [object]
+       git-notary new <major|minor|patch> [object] [namespace]
 
        git-notary fetch [remote] [namespace]
        git-notary push [remote] [namespace]
