@@ -146,7 +146,26 @@ new() {
     fi
 }
 
+# delta (--squash) [object] [base] [namespace]
+delta() {
+    if test "${1}" = '--squash'; then
+       SQUASH=true
+       shift
+    fi
 
+    OBJECT=${1:-HEAD}
+    BASE=${2:-$(git describe --tags --abbrev=0)}
+    NAMESPACE=${3:-${GIT_NOTARY_NAMESPACE:-'versioning'}}
+
+    if test "${SQUASH}" = 'true'; then
+        NEW=$(git-notary notes ${OBJECT} ${BASE} ${NAMESPACE} | git-notary squash | git-notary versions | awk '{ print $2 }')
+    else
+        NEW=$(git-notary notes ${OBJECT} ${BASE} ${NAMESPACE} | git-notary versions | tail -1 | awk '{ print $2 }')
+    fi
+
+    LATEST_TAG_ON_BASE=$(git describe --tags --abbrev=0 ${BASE})
+    OLD=${LATEST_TAG_ON_BASE:-'0.0.0'}
+    echo "${OLD} -> ${NEW}"
 }
 
 # undo [object] [namespace]
@@ -198,6 +217,8 @@ notary() {
             new ${@};;
         u|undo)
             undo ${@};;
+        d|delta)
+            delta ${@};;
         P|push)
             push ${@};;
         f|fetch)
