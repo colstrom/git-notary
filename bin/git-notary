@@ -146,12 +146,7 @@ new() {
     fi
 }
 
-# show [object] [namespace]
-show() {
-    OBJECT=${1:-HEAD}
-    NAMESPACE=${2:-${GIT_NOTARY_NAMESPACE:-'versioning'}}
 
-    git notes --ref=${NAMESPACE} show ${OBJECT}
 }
 
 # undo [object] [namespace]
@@ -203,8 +198,6 @@ notary() {
             new ${@};;
         u|undo)
             undo ${@};;
-        s|show)
-            show ${@};;
         P|push)
             push ${@};;
         f|fetch)
