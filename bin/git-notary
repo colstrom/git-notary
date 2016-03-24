@@ -1,6 +1,6 @@
 #!/bin/sh
 
-GIT_NOTARY_VERSION='2.0.2'
+GIT_NOTARY_VERSION='2.1.0'
 
 # notes [branch] [base] [namespace]
 notes() {
