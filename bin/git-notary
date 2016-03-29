@@ -1,12 +1,13 @@
 #!/bin/sh
 
 GIT_NOTARY_VERSION='2.1.0'
+GIT_NOTARY_NAMESPACE=${GIT_NOTARY_NAMESPACE:-'versioning'}
 
 # notes [branch] [base] [namespace]
 notes() {
     BRANCH=${1-'develop'}
     BASE=${2:-$(git describe --tags --abbrev=0)}
-    NAMESPACE=${3:-${GIT_NOTARY_NAMESPACE:-'versioning'}}
+    NAMESPACE=${3:-${GIT_NOTARY_NAMESPACE}}
 
     git rev-list --topo-order ${BASE}..${BRANCH} --reverse | while read OBJECT; do
         printf "${OBJECT} "
@@ -119,7 +120,7 @@ tags() {
 # fetch [remote] [namespace]
 fetch() {
     REMOTE=${1:-'origin'}
-    NAMESPACE=${2:-${GIT_NOTARY_NAMESPACE:-'versioning'}}
+    NAMESPACE=${2:-${GIT_NOTARY_NAMESPACE}}
 
     git fetch ${REMOTE} refs/notes/${NAMESPACE}:refs/notes/${NAMESPACE}
 }
@@ -127,7 +128,7 @@ fetch() {
 # push [remote] [namespace]
 push() {
     REMOTE=${1:-'origin'}
-    NAMESPACE=${2:-${GIT_NOTARY_NAMESPACE:-'versioning'}}
+    NAMESPACE=${2:-${GIT_NOTARY_NAMESPACE}}
 
     git push --no-verify ${REMOTE} refs/notes/${NAMESPACE}
 }
@@ -136,7 +137,7 @@ push() {
 new() {
     CHANGE=$(echo ${1} | tr [:lower:] [:upper:])
     OBJECT=${2:-HEAD}
-    NAMESPACE=${3:-${GIT_NOTARY_NAMESPACE:-'versioning'}}
+    NAMESPACE=${3:-${GIT_NOTARY_NAMESPACE}}
 
     if echo ${CHANGE} | grep -qE '^(MAJOR|MINOR|PATCH)$'; then
         git notes --ref=${NAMESPACE} add --message ${CHANGE} ${OBJECT}
@@ -155,7 +156,7 @@ delta() {
 
     OBJECT=${1:-HEAD}
     BASE=${2:-$(git describe --tags --abbrev=0)}
-    NAMESPACE=${3:-${GIT_NOTARY_NAMESPACE:-'versioning'}}
+    NAMESPACE=${3:-${GIT_NOTARY_NAMESPACE}}
 
     if test "${SQUASH}" = 'true'; then
         NEW=$(git-notary notes ${OBJECT} ${BASE} ${NAMESPACE} | git-notary squash | git-notary versions | awk '{ print $2 }')
@@ -171,7 +172,7 @@ delta() {
 # undo [object] [namespace]
 undo() {
     OBJECT=${1:-HEAD}
-    NAMESPACE=${2:-${GIT_NOTARY_NAMESPACE:-'versioning'}}
+    NAMESPACE=${2:-${GIT_NOTARY_NAMESPACE}}
 
     git notes --ref=${NAMESPACE} remove ${OBJECT}
 }
