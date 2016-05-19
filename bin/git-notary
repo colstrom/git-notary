@@ -242,4 +242,4 @@ notary() {
     esac
 }
 
-notary ${@}
+notary "${@:-}"
