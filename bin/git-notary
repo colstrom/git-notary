@@ -119,10 +119,15 @@ tags() {
 
 # fetch [remote] [namespace]
 fetch() {
+    FORCE=""
+    if test "${1:-}" = "--force"; then
+        shift
+        FORCE="+"
+    fi
     REMOTE=${1:-'origin'}
     NAMESPACE=${2:-${GIT_NOTARY_NAMESPACE}}
 
-    git fetch ${REMOTE} refs/notes/${NAMESPACE}:refs/notes/${NAMESPACE}
+    git fetch ${REMOTE} ${FORCE}refs/notes/${NAMESPACE}:refs/notes/${NAMESPACE}
 }
 
 # push [remote] [namespace]
