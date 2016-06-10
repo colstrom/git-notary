@@ -2,5 +2,5 @@
 
 set -o errexit
 
-git-notary fetch
+git-notary pull
 git-notary push
