@@ -102,6 +102,12 @@ Where <version> is one of (major, minor, patch).
   git-notary fetch [remote] [namespace]
 #+END_SRC
 
+** Fetch and merge versioning notes
+
+#+BEGIN_SRC shell
+  git-notary pull [remote] [namespace] [merge-strategy]
+#+END_SRC
+
 ** Push versioning notes
 
 #+BEGIN_SRC shell
