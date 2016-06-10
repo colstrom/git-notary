@@ -1,6 +1,6 @@
 #!/bin/sh
 
-GIT_NOTARY_VERSION=2.2.1
+GIT_NOTARY_VERSION=2.3.0
 GIT_NOTARY_NAMESPACE=${GIT_NOTARY_NAMESPACE:-'versioning'}
 
 # notes [branch] [base] [namespace]
@@ -130,6 +130,16 @@ fetch() {
     git fetch ${REMOTE} ${FORCE}refs/notes/${NAMESPACE}:refs/notes/${NAMESPACE}
 }
 
+# pull [remote] [namespace] [strategy]
+pull() {
+    REMOTE=${1:-'origin'}
+    NAMESPACE=${2:-${GIT_NOTARY_NAMESPACE}}
+    STRATEGY=${3:-'theirs'}
+
+    git fetch  ${REMOTE} refs/notes/${NAMESPACE}
+    env GIT_NOTES_REF=refs/notes/${NAMESPACE} git notes merge -s ${STRATEGY} FETCH_HEAD
+}
+
 # push [remote] [namespace]
 push() {
     REMOTE=${1:-'origin'}
@@ -230,6 +240,8 @@ notary() {
             push ${@};;
         f|fetch)
             fetch ${@};;
+        fm|fetch-merge|pull)
+            pull ${@};;
         M|major)
             new MAJOR ${@};;
         m|minor)
