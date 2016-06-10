@@ -127,7 +127,8 @@ fetch() {
     REMOTE=${1:-'origin'}
     NAMESPACE=${2:-${GIT_NOTARY_NAMESPACE}}
 
-    git fetch ${REMOTE} ${FORCE}refs/notes/${NAMESPACE}:refs/notes/${NAMESPACE}
+    git fetch ${REMOTE} ${FORCE}refs/notes/${NAMESPACE}:refs/notes/${NAMESPACE} \
+      || git notes merge -v -s theirs --ref refs/notes/${NAMESPACE} FETCH_HEAD
 }
 
 # pull [remote] [namespace] [strategy]
