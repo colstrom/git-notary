@@ -1,0 +1,38 @@
+#!/bin/sh
+
+VERSION_STRING=${VERSION_STRING:-'GIT_NOTARY_VERSION'}
+VERSION_FILE=${VERSION_FILE:-'bin/git-notary'}
+
+OLD_VERSION=$(grep ${VERSION_STRING} ${VERSION_FILE} | awk -F = '{ print $2 }' | tr -d "'")
+NEW_VERSION=$(git-notary notes | git-notary versions | tail -1 | awk '{ print $2 }')
+NEW_VERSION=${NEW_VERSION:-$(git describe --tags --abbrev=0)}
+
+export GITHUB_TOKEN=${GITHUB_TOKEN:-${GITHUB_ACCESS_TOKEN}}
+GITHUB_USER=${GITHUB_USER:-$(basename $(dirname $PWD))}
+GITHUB_REPO=${GITHUB_REPO:-$(basename $PWD)}
+
+#sed -i '' "s/\(${VERSION_STRING}\)=.*/\1=${NEW_VERSION}/" ${VERSION_FILE}
+
+DONE=false
+
+while test ${DONE} = false; do
+      git diff
+      echo "Commit? [y/N]"
+      read CONFIRMATION
+      case ${CONFIRMATION} in
+          Y|y)
+              # git commit ${VERSION_FILE} -m "Bump version from ${OLD_VERSION} to ${NEW_VERSION}"
+              # git tag ${NEW_VERSION}
+              # git push
+              # git push --tags
+              # git-notary push
+              github-release release --user ${GITHUB_USER} --repo ${GITHUB_REPO} --tag ${NEW_VERSION}
+              github-release upload --user ${GITHUB_USER} --repo ${GITHUB_REPO} --tag ${NEW_VERSION} --file ${VERSION_FILE} --name $(basename ${VERSION_FILE})
+              DONE=true
+              ;;
+          N|n)
+              git checkout ${VERSION_FILE}
+              DONE=true
+              ;;
+      esac
+done
