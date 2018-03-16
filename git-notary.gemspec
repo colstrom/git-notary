@@ -1,11 +1,21 @@
 Gem::Specification.new do |gem|
-  gem.name     = 'git-notary'
-  gem.version  = `git describe --tags --abbrev=0`.chomp
-  gem.license  = 'MIT'
-  gem.author   = 'Chris Olstrom'
-  gem.email    = 'chris@olstrom.com'
-  gem.homepage = 'https://github.com/colstrom/git-notary'
-  gem.summary  = 'generates canonical version tags from versioning notes'
-  gem.files    = `git ls-files`.split("\n")
-  gem.executables = `git ls-files -- bin/*`.split("\n").map { |f| File.basename(f) }
+  tag = `git describe --tags --abbrev=0`.chomp
+
+  gem.name        = 'git-notary'
+  gem.homepage    = 'https://github.com/colstrom/git-notary'
+  gem.summary     = 'generates canonical version tags from versioning notes'
+
+  gem.version     = "#{tag}"
+  gem.licenses    = ['MIT']
+  gem.authors     = ['Chris Olstrom']
+  gem.email       = 'chris@olstrom.com'
+
+  gem.cert_chain    = ['trust/certificates/colstrom.pem']
+  gem.signing_key   = File.expand_path ENV.fetch 'GEM_SIGNING_KEY'
+
+  gem.files       = `git ls-files -z`.split("\x0")
+  gem.test_files  = `git ls-files -z -- {test,spec,features}/*`.split("\x0")
+  gem.executables = `git ls-files -z -- bin/[^internal/]*`.split("\x0").map { |f| File.basename(f) }
+
+  gem.require_paths = ['lib']
 end
